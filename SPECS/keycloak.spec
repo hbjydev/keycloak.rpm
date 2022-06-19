@@ -9,7 +9,10 @@ URL:            https://keycloak.org
 Source0:        https://github.com/%{name}/%{name}/releases/download/%{version}/%{name}-%{version}.tar.gz
 Source1:	%{name}.service
 
-BuildRequires:	java-11-openjdk
+Patch1:		keycloak-18.0.1-kcsh-etc-keycloak.patch
+
+BuildRequires:	systemd-rpm-macros
+
 Requires:       java-11-openjdk
 
 Requires(preun):	systemd-units
@@ -21,43 +24,47 @@ Keycloak is an Open Source Identity and Access Management solution for modern Ap
 
 %prep
 %setup -q
+%patch1
 
 %install
 rm -rf $RPM_BUILD_ROOT
-mkdir -p $RPM_BUILD_ROOT/%{_datadir}/keycloak
-cp -r * $RPM_BUILD_ROOT/%{_datadir}/keycloak/
-cd $RPM_BUILD_ROOT/%{_datadir}/keycloak
-mkdir -p $RPM_BUILD_ROOT/usr/lib/systemd/system
-install -p -m 644 $RPM_SOURCE_DIR/keycloak.service $RPM_BUILD_ROOT/usr/lib/systemd/system/keycloak.service
+mkdir -p $RPM_BUILD_ROOT/%{_datadir}/%{name}
+cp -r README.md LICENSE.txt version.txt bin providers themes lib $RPM_BUILD_ROOT/%{_datadir}/%{name}/
+mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}
+cp -r conf $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}
+cd $RPM_BUILD_ROOT/%{_datadir}/%{name}
+mkdir -p $RPM_BUILD_ROOT/%{_unitdir}
+install -p -m 644 $RPM_SOURCE_DIR/%{name}.service $RPM_BUILD_ROOT/%{_unitdir}/%{name}.service
 
 %post
-%systemd_post keycloak.service
+%systemd_post %{name}.service
 
 %preun
-%systemd_preun keycloak.service
+%systemd_preun %{name}.service
 
 %postun
-%systemd_postun keycloak.service
+%systemd_postun %{name}.service
 
 %files
-/usr/share/keycloak/README.md
-/usr/share/keycloak/LICENSE.txt
-/usr/share/keycloak/version.txt
-/usr/share/keycloak/bin/client/keycloak-admin-cli-%{version}.jar
-/usr/share/keycloak/bin/client/keycloak-client-registration-cli-%{version}.jar
-/usr/share/keycloak/bin/kcadm.bat
-/usr/share/keycloak/bin/kcadm.sh
-/usr/share/keycloak/bin/kc.bat
-/usr/share/keycloak/bin/kc.sh
-/usr/share/keycloak/bin/kcreg.bat
-/usr/share/keycloak/bin/kcreg.sh
-/usr/share/keycloak/conf/cache-ispn.xml
-/usr/share/keycloak/conf/keycloak.conf
-/usr/share/keycloak/conf/README.md
-/usr/share/keycloak/providers/README.md
-/usr/share/keycloak/themes/README.md
-/usr/share/keycloak/lib
-/usr/lib/systemd/system/keycloak.service
+%config %{_sysconfdir}/%{name}/cache-ispn.xml
+%config %{_sysconfdir}/%{name}/keycloak.conf
+%config %{_sysconfdir}/%{name}/README.md
+
+%{_datadir}/%{name}/README.md
+%{_datadir}/%{name}/LICENSE.txt
+%{_datadir}/%{name}/version.txt
+%{_datadir}/%{name}/bin/client/keycloak-admin-cli-%{version}.jar
+%{_datadir}/%{name}/bin/client/keycloak-client-registration-cli-%{version}.jar
+%{_datadir}/%{name}/bin/kcadm.bat
+%{_datadir}/%{name}/bin/kcadm.sh
+%{_datadir}/%{name}/bin/kc.bat
+%{_datadir}/%{name}/bin/kc.sh
+%{_datadir}/%{name}/bin/kcreg.bat
+%{_datadir}/%{name}/bin/kcreg.sh
+%{_datadir}/%{name}/providers/README.md
+%{_datadir}/%{name}/themes/README.md
+%{_datadir}/%{name}/lib
+%{_unitdir}/%{name}.service
 
 %changelog
 * Sat Jun 18 2022 Hayden Young

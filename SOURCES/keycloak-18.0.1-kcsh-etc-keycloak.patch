@@ -1,0 +1,11 @@
+--- bin/kc.sh		2022-06-20 00:09:52.061340591 +0100
++++ bin/kc.sh-orig	2022-06-20 00:09:41.724354579 +0100
+@@ -23,7 +23,7 @@
+ GREP="grep"
+ DIRNAME=`dirname "$RESOLVED_NAME"`
+ 
+-SERVER_OPTS="-Dkc.home.dir='$DIRNAME'/../ -Djboss.server.config.dir='$DIRNAME'/../conf -Djava.util.logging.manager=org.jboss.logmanager.LogManager -Dquarkus-log-max-startup-records=10000"
++SERVER_OPTS="-Dkc.home.dir='$DIRNAME'/../ -Djboss.server.config.dir=/etc/keycloak -Djava.util.logging.manager=org.jboss.logmanager.LogManager -Dquarkus-log-max-startup-records=10000"
+ 
+ DEBUG_MODE="${DEBUG:-false}"
+ DEBUG_PORT="${DEBUG_PORT:-8787}"
