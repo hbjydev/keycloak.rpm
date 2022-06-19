@@ -1,0 +1,9 @@
+[Unit]
+Description = Open Source Identity and Access Management
+
+[Service]
+Type=Simple
+ExecStart=/usr/share/keycloak/bin/kc.sh start
+
+[Install]
+Wants=multi-user.target
