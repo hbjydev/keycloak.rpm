@@ -6,7 +6,7 @@ BuildArch:	noarch
 
 License:        Apache-2.0
 URL:            https://keycloak.org
-Source0:        %{name}-%{version}.tar.gz
+Source0:        https://github.com/%{name}/%{name}/releases/download/%{version}/%{name}-%{version}.tar.gz
 Source1:	%{name}.service
 
 BuildRequires:	java-11-openjdk
@@ -21,14 +21,14 @@ Keycloak is an Open Source Identity and Access Management solution for modern Ap
 
 %prep
 %setup -q
-mkdir -p $RPM_BUILD_ROOT/usr/lib/systemd/system
-install -p -m 644 $RPM_SOURCE_DIR/keycloak.service $RPM_BUILD_ROOT/usr/lib/systemd/system/keycloak.service
 
 %install
 rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/%{_datadir}/keycloak
 cp -r * $RPM_BUILD_ROOT/%{_datadir}/keycloak/
 cd $RPM_BUILD_ROOT/%{_datadir}/keycloak
+mkdir -p $RPM_BUILD_ROOT/usr/lib/systemd/system
+install -p -m 644 $RPM_SOURCE_DIR/keycloak.service $RPM_BUILD_ROOT/usr/lib/systemd/system/keycloak.service
 
 %post
 %systemd_post keycloak.service
