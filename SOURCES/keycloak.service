@@ -6,4 +6,4 @@ Type=Simple
 ExecStart=/usr/share/keycloak/bin/kc.sh start
 
 [Install]
-Wants=multi-user.target
+WantedBy=multi-user.target
